@@ -31,8 +31,13 @@ module RuboCop
           end
 
           opt.on('-r', '--require FILE',
-                 'Require Ruby file') do |file|
+                 'Require Ruby file before running checks') do |file|
             require file
+          end
+
+          opt.on('-R', '--run-after FILE',
+                'Require Ruby file and call `#run` on its class, after running usual checks') do |file|
+            @options.rubocop[:require_after] = file
           end
 
           opt.on('-d', '--debug', 'Display debug info') do
