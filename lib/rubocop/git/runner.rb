@@ -12,6 +12,8 @@ module RuboCop
 
         display_violations($stdout)
 
+        require_after(options.rubocop[:require_after])
+
         exit(1) if violations.any?
       end
 
@@ -56,6 +58,20 @@ module RuboCop
         end
 
         formatter.finished(@files.map(&:filename).freeze)
+      end
+
+      def require_after(file = nil)
+        if file
+          require file
+          klass = classify(file)
+          klass.run(@files)
+        end
+      end
+
+      def classify(string)
+        string.gsub!(/(^\.\/)|(\.rb)/,'')
+        klass = string.to_s.split('_').collect(&:capitalize).join
+        Object.const_get(klass)
       end
     end
   end
